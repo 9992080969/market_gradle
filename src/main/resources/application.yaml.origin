@@ -1,2 +1,13 @@
-r2dbcUrl= r2dbc:pool:postgres://localhost:5432/market_db
-r2dbcUsername=postgres
+server:
+  port:
+
+spring:
+  r2dbc:
+    url:
+    username:
+    password:
+  flyway:
+    url:
+    locations:
+    user:
+    password:
