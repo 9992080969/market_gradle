@@ -1,0 +1,2 @@
+r2dbcUrl= r2dbc:pool:postgres://localhost:5432/market_db
+r2dbcUsername=postgres
