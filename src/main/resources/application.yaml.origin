@@ -11,3 +11,12 @@ spring:
     locations:
     user:
     password:
+jwt:
+  password:
+    encoder:
+      secret:
+      iteration:
+      keyLength:
+  secret:
+  expiration:
+  issuer:
