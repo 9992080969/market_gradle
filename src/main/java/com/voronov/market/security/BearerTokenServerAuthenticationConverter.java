@@ -16,7 +16,7 @@ import java.util.function.Function;
 public class BearerTokenServerAuthenticationConverter implements ServerAuthenticationConverter {
     private final JwtHandler jwtHandler;
     private static final String BEARER_PREFIX = "Bearer ";
-    private static final Function<String,Mono<String>> getBearerValue = authValue -> Mono.justOrEmpty(authValue.substring(BEARER_PREFIX.length()));
+    private static final Function<String, Mono<String>> getBearerValue = authValue -> Mono.justOrEmpty(authValue.substring(BEARER_PREFIX.length()));
 
     @Override
     public Mono<Authentication> convert(ServerWebExchange exchange) {
@@ -26,10 +26,9 @@ public class BearerTokenServerAuthenticationConverter implements ServerAuthentic
                 .flatMap(UserAuthenticationBearer::create);
     }
 
-    private Mono<String> extractHeader(ServerWebExchange exchange){
+    private Mono<String> extractHeader(ServerWebExchange exchange) {
         return Mono.justOrEmpty(exchange.getRequest()
                 .getHeaders()
                 .getFirst(HttpHeaders.AUTHORIZATION));
-
     }
 }

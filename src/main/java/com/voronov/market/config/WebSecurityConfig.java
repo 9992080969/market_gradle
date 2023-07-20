@@ -41,12 +41,13 @@ public class WebSecurityConfig {
                 .authenticated()
                 .and()
                 .exceptionHandling()
-                .authenticationEntryPoint((swe, e) -> {
+                .authenticationEntryPoint((swe , e) -> {
                     log.error("IN securityWebFilterChain - unauthorized error: {}", e.getMessage());
                     return Mono.fromRunnable(() -> swe.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED));
                 })
                 .accessDeniedHandler((swe, e) -> {
                     log.error("IN securityWebFilterChain - access denied: {}", e.getMessage());
+
                     return Mono.fromRunnable(() -> swe.getResponse().setStatusCode(HttpStatus.FORBIDDEN));
                 })
                 .and()
@@ -58,6 +59,7 @@ public class WebSecurityConfig {
         AuthenticationWebFilter bearerAuthenticationFilter = new AuthenticationWebFilter(authenticationManager);
         bearerAuthenticationFilter.setServerAuthenticationConverter(new BearerTokenServerAuthenticationConverter(new JwtHandler(secret)));
         bearerAuthenticationFilter.setRequiresAuthenticationMatcher(ServerWebExchangeMatchers.pathMatchers("/**"));
+
         return bearerAuthenticationFilter;
     }
 }

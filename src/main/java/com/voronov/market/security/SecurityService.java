@@ -53,6 +53,7 @@ public class SecurityService {
                 .setExpiration(expirationDate)
                 .signWith(SignatureAlgorithm.HS256, Base64.getEncoder().encodeToString(secret.getBytes()))
                 .compact();
+
         return TokenDetails.builder()
                 .token(token)
                 .issuedAt(createdDate)
@@ -67,12 +68,15 @@ public class SecurityService {
                     if (!user.isEnabled()) {
                         return Mono.error(new AuthException("Account disabled", "PROSELYTE_USER_ACCOUNT_DISABLED"));
                     }
-                    if (passwordEncoder.matches(password, user.getPassword())) {
-                        return Mono.error(new AuthException("Invalid password","PROSELYTE_INVALID_PASSWORD"));
+
+                    if (!passwordEncoder.matches(password, user.getPassword())) {
+                        return Mono.error(new AuthException("Invalid password", "PROSELYTE_INVALID_PASSWORD"));
                     }
-                    return Mono.just(generateToken(user).toBuilder().userId(user.getId())
+
+                    return Mono.just(generateToken(user).toBuilder()
+                            .userId(user.getId())
                             .build());
                 })
-                .switchIfEmpty(Mono.error(new AuthException("Invalid username","PROSELYTE_INVALID_USERNAME")));
+                .switchIfEmpty(Mono.error(new AuthException("Invalid username", "PROSELYTE_INVALID_USERNAME")));
     }
 }

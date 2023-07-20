@@ -13,7 +13,6 @@ import java.util.List;
  */
 public class UserAuthenticationBearer {
     public static Mono<Authentication> create(JwtHandler.VerificationResult verificationResult) {
-
         Claims claims = verificationResult.claims;
         String subject = claims.getSubject();
 
@@ -25,7 +24,7 @@ public class UserAuthenticationBearer {
         Long principalId = Long.parseLong(subject);
         CustomPrincipal principal = new CustomPrincipal(principalId, username);
 
-        return Mono.justOrEmpty(new UsernamePasswordAuthenticationToken(principal, null));
+        return Mono.justOrEmpty(new UsernamePasswordAuthenticationToken(principal, null, authorities));
     }
 
 }
