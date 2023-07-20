@@ -1,8 +1,8 @@
 package com.voronov.market.security;
 
-import com.voronov.market.exception.AuthExceprion;
+import com.voronov.market.exception.AuthException;
 import com.voronov.market.model.UserEntity;
-import com.voronov.market.repository.UserRepository;
+import com.voronov.market.service.UserService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ import java.util.*;
 @Component
 @RequiredArgsConstructor
 public class SecurityService {
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final PasswordEncoder passwordEncoder;
 
     @Value("${jwt.secret}")
@@ -62,17 +62,17 @@ public class SecurityService {
 
 
     public Mono<TokenDetails> authenticate(String username, String password) {
-        return userRepository.findByUsername(username)
+        return userService.getUserByUsername(username)
                 .flatMap(user -> {
                     if (!user.isEnabled()) {
-                        return Mono.error(new AuthExceprion("Account disabled", "PROSELYTE_USER_ACCOUNT_DISABLED"));
+                        return Mono.error(new AuthException("Account disabled", "PROSELYTE_USER_ACCOUNT_DISABLED"));
                     }
                     if (passwordEncoder.matches(password, user.getPassword())) {
-                        return Mono.error(new AuthExceprion("Invalid password","PROSELYTE_INVALID_PASSWORD"));
+                        return Mono.error(new AuthException("Invalid password","PROSELYTE_INVALID_PASSWORD"));
                     }
                     return Mono.just(generateToken(user).toBuilder().userId(user.getId())
                             .build());
                 })
-                .switchIfEmpty(Mono.error(new AuthExceprion("Invalid username","PROSELYTE_INVALID_USERNAME")));
+                .switchIfEmpty(Mono.error(new AuthException("Invalid username","PROSELYTE_INVALID_USERNAME")));
     }
 }

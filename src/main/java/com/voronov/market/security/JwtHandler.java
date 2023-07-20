@@ -1,6 +1,5 @@
 package com.voronov.market.security;
 
-import com.voronov.market.exception.AuthExceprion;
 import com.voronov.market.exception.UnauthorizedException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
